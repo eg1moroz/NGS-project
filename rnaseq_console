@@ -1,0 +1,34 @@
+#Project_rnaseq
+
+# 0. soft's already installed
+
+# 1.0 download reference and annotation
+
+mkdir index
+cd index
+wget ftp://ftp.ensembl.org/pub/current_fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
+gunzip Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
+wget ftp://ftp.ensembl.org/pub/current_gtf/homo_sapiens/Homo_sapiens.GRCh38.102.chr.gtf.gz
+gunzip Homo_sapiens.GRCh38.102.chr.gtf.gz
+
+# 1.1 make index
+
+python3 ~/bin/hisat2-2.2.1/extract_exons.py Homo_sapiens.GRCh38.102.chr.gtf > exons
+python3 ~/bin/hisat2-2.2.1/extract_splice_sites.py Homo_sapiens.GRCh38.102.chr.gtf > splices
+pythin3 ~/bin/hisat2-2.2.1/hisat2-build Homo_sapiens.GRCh38.dna.primary_assembly.fa Homo_sapiens.GRCh38.dna.primary_assembly 
+
+# 1.2 map
+
+cd ..
+mkdir bam
+for i in SRR8750495 SRR8750496 SRR8750497 SRR8750498 SRR8750487 SRR8750488 SRR8750489 SRR8750490 SRR8750491 SRR8750492 SRR8750493 SRR8750494 SRR8750789 SRR8750790 SRR8750791  SRR8750792; 
+do 
+	echo $i;
+	 ~/bin/hisat2-2.2.1/hisat2 -p 10 -t --known-splicesite-infile index/splices --no-softclip --summary-file bam1/$i.log -x index/Homo_sapiens.GRCh38.dna.primary_assembly --sra-acc $i |samtools view -Sb - > bam1/$i.bam
+	 samtools sort -o bam1/$i.bam  bam1/$i.bam
+	 samtools index bam1/$i.bam
+ done
+
+### avarage alignment rate - 70%. (?)
+
+### NEXT STEPS in R
