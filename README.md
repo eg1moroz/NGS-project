@@ -5,4 +5,4 @@ Files Description_rnaseq1.docx, rnaseq_fullcode, rnaseq_Rcode.r, rnaseq_console:
 
 Counts data in Rdata repository
 
-Files description_splicing.docx, splicing.r, splicing_fullcode: second part about alternative splicing
+Files description_splicing.docx, splicing.r, splicing_fullcode: second part about alternative splicing depends on first part code
